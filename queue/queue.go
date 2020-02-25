@@ -111,11 +111,11 @@ func (q *Queue) Run(c *colly.Collector) error {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			atomic.AddInt32(&q.activeThreadCount, 1)
 			for r := range q.requestsOut {
+				atomic.AddInt32(&q.activeThreadCount, 1)
 				r.Do()
+				atomic.AddInt32(&q.activeThreadCount, -1)
 			}
-			atomic.AddInt32(&q.activeThreadCount, -1)
 		}()
 	}
 
